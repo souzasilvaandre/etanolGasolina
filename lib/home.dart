@@ -10,6 +10,37 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController _controllerEtanol = TextEditingController();
   TextEditingController _controllerGasolina = TextEditingController();
+  String _textoResultado = "";
+  void _calcular() {
+    double? precoEtanol = double.tryParse(_controllerEtanol.text);
+    double? precoGasolina = double.tryParse(_controllerGasolina.text);
+    if (precoEtanol == null || precoGasolina == null) {
+      print("Número inválido, digite números maiores que 0 e utilizando (.)");
+      setState(() {
+        _textoResultado =
+            "Número inválido, digite números maiores que 0 e utilizando (.)";
+      });
+    } else {
+      if ((precoEtanol / precoGasolina) >= 0.7) {
+        setState(() {
+          _textoResultado = "Melhor abastecer com gasolina";
+        });
+        _limpaCampos();
+      } else {
+        setState(() {
+          _textoResultado = "Melhor abastecer com etanol";
+        });
+        setState(() {});
+        _limpaCampos();
+      }
+    }
+  }
+
+  void _limpaCampos() {
+    _controllerEtanol.clear();
+    _controllerGasolina.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +98,7 @@ class _HomeState extends State<Home> {
                         textStyle: TextStyle(
                           fontSize: 25,
                         )),
-                    onPressed: () {},
+                    onPressed: _calcular,
                     child: Text(
                       "Calcular",
                       style: TextStyle(color: Colors.white),
@@ -76,13 +107,11 @@ class _HomeState extends State<Home> {
               Center(
                 child: Padding(
                   padding: EdgeInsets.all(20),
-                  child: Text("resultado",
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.red
+                  child: Text(
+                    _textoResultado,
+                    style: TextStyle(fontSize: 25, color: Colors.red),
                   ),
-                  ),
-                  ),
+                ),
               )
             ],
           ),
